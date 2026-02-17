@@ -1,0 +1,10 @@
+prefix: "&7[&9ServerHub&7] "
+
+only-player: "&c这个命令只有玩家才能执行!"
+no-permission: "&c你没有权限执行这个指令!"
+reload-success: "&a已重载配置文件!"
+
+in-blacklist: "&c你不能在当前服务器上使用这个指令!"
+no-lobby: "&c没有可用的大厅服务器!"
+already-lobby: "&c你已经在大厅服务器了!"
+server-not-found: "&c服务器不存在!"

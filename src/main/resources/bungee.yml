@@ -1,0 +1,4 @@
+name: ServerHub
+version: '1.0'
+author: ShanguanLinG
+main: org.shanguanling.serverhub.ServerHub

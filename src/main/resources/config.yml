@@ -1,0 +1,4 @@
+lobby-servers:
+  - "Lobby"
+blacklist-servers:
+  - "Login"
