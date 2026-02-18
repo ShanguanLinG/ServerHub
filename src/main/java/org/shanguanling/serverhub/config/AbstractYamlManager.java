@@ -8,6 +8,8 @@ import net.md_5.bungee.config.YamlConfiguration;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.util.Collections;
+import java.util.List;
 
 public abstract class AbstractYamlManager {
 
@@ -54,7 +56,24 @@ public abstract class AbstractYamlManager {
         load();
     }
 
-    public Configuration getConfig() {
+    public Configuration getYaml() {
         return configuration;
+    }
+
+    public String getYamlString(String path) {
+        if (!getYaml().contains(path)) return null;
+        return getYaml().getString(path);
+    }
+
+    public List<String> getYamlStringList(String path) {
+        if (!getYaml().contains(path)) return Collections.emptyList();
+        return getYaml().getStringList(path);
+    }
+
+    public String getRandomYamlStringFromList(String path) {
+        if (!getYaml().contains(path)) return null;
+        List<String> list = getYaml().getStringList(path);
+        if (list.isEmpty()) return null;
+        return list.get((int) (Math.random() * list.size()));
     }
 }

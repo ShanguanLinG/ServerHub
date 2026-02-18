@@ -7,18 +7,21 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import org.shanguanling.serverhub.ServerHub;
 import org.shanguanling.serverhub.config.ConfigManager;
+import org.shanguanling.serverhub.config.MessageManager;
+import org.shanguanling.serverhub.enums.ConfigKey;
+import org.shanguanling.serverhub.enums.MessageKey;
 
 import java.util.List;
-import java.util.Random;
 
 public class HubCommand extends Command {
 
     private final ServerHub plugin;
-    private final Random random = new Random();
+    private final MessageManager messageManager;
 
     public HubCommand(ServerHub plugin) {
         super("hub", null, "lobby");
         this.plugin = plugin;
+        this.messageManager = plugin.getMessageManager();
     }
 
     @Override
@@ -37,28 +40,31 @@ public class HubCommand extends Command {
 
     private void sendPlayerToLobby(CommandSender commandSender) {
         if (!(commandSender instanceof ProxiedPlayer player)) {
-            commandSender.sendMessage(plugin.getMessageManager().get("only-player"));
+            commandSender.sendMessage(messageManager.getYamlString(MessageKey.ONLY_PLAYER.getPath()));
             return;
         }
         String serverName = player.getServer().getInfo().getName();
         ConfigManager configManager = plugin.getConfigManager();
-        if (configManager.getBlackListServers().stream().anyMatch(s -> s.equals(serverName))) {
-            player.sendMessage(plugin.getMessageManager().get("in-blacklist"));
+        if (configManager
+                .getYamlStringList(ConfigKey.BLACKLIST_SERVERS.getPath())
+                .stream()
+                .anyMatch(s -> s.equals(serverName))) {
+            player.sendMessage(messageManager.getYamlString(MessageKey.IN_BLACKLIST.getPath()));
             return;
         }
-        List<String> lobbyServers = configManager.getLobbyServers();
+        List<String> lobbyServers = configManager.getYamlStringList(ConfigKey.LOBBY_SERVERS.getPath());
         if (lobbyServers.isEmpty()) {
-            player.sendMessage(plugin.getMessageManager().get("no-lobby"));
+            player.sendMessage(messageManager.getYamlString(MessageKey.NO_LOBBY.getPath()));
             return;
         }
         if (lobbyServers.contains(player.getServer().getInfo().getName())) {
-            player.sendMessage(plugin.getMessageManager().get("already-lobby"));
+            player.sendMessage(messageManager.getYamlString(MessageKey.ALREADY_LOBBY.getPath()));
             return;
         }
-        String lobbyServerName = lobbyServers.get(random.nextInt(lobbyServers.size()));
-        ServerInfo serverInfo = ProxyServer.getInstance().getServerInfo(lobbyServerName);
+        String randomLobbyServerName = configManager.getRandomYamlStringFromList(ConfigKey.LOBBY_SERVERS.getPath());
+        ServerInfo serverInfo = ProxyServer.getInstance().getServerInfo(randomLobbyServerName);
         if (serverInfo == null) {
-            player.sendMessage(plugin.getMessageManager().get("server-not-found"));
+            player.sendMessage(messageManager.getYamlString(MessageKey.SERVER_NOT_FOUND.getPath()));
             return;
         }
         player.connect(serverInfo);
@@ -66,13 +72,13 @@ public class HubCommand extends Command {
 
     private void reloadConfig(String arg, CommandSender commandSender) {
         if (!commandSender.hasPermission("serverhub.reload")) {
-            commandSender.sendMessage(plugin.getMessageManager().get("no-permission"));
+            commandSender.sendMessage(messageManager.getYamlString(MessageKey.NO_PERMISSION.getPath()));
             return;
         }
         if ("reload".equalsIgnoreCase(arg)) {
             plugin.getConfigManager().reload();
             plugin.getMessageManager().reload();
-            commandSender.sendMessage(plugin.getMessageManager().get("reload-success"));
+            commandSender.sendMessage(messageManager.getYamlString(MessageKey.RELOAD_SUCCESS.getPath()));
         }
     }
 }
