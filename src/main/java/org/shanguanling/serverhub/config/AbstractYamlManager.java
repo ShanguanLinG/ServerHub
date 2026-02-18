@@ -60,7 +60,7 @@ public abstract class AbstractYamlManager {
         return configuration;
     }
 
-    public String getYamlString(String path) {
+    public String getYamlStringWithPrefix(String path) {
         if (!getYaml().contains(path)) return null;
         return getYaml().getString(path);
     }

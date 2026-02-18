@@ -1,7 +1,7 @@
 package org.shanguanling.serverhub;
 
 import net.md_5.bungee.api.plugin.Plugin;
-import org.shanguanling.serverhub.command.HubCommand;
+import org.shanguanling.serverhub.command.PluginCommand;
 import org.shanguanling.serverhub.config.ConfigManager;
 import org.shanguanling.serverhub.config.MessageManager;
 
@@ -14,7 +14,7 @@ public final class ServerHub extends Plugin {
     public void onEnable() {
         configManager = new ConfigManager(this);
         messageManager = new MessageManager(this);
-        getProxy().getPluginManager().registerCommand(this, new HubCommand(this));
+        getProxy().getPluginManager().registerCommand(this, new PluginCommand(this));
     }
 
     @Override

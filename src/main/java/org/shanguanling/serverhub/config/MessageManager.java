@@ -10,14 +10,17 @@ public class MessageManager extends AbstractYamlManager {
         super(plugin, "message.yml");
     }
 
+    public String getPrefix() {
+        return getYaml().getString(MessageKey.PREFIX.getPath());
+    }
+
     @Override
-    public String getYamlString(String path) {
+    public String getYamlStringWithPrefix(String path) {
         if (!getYaml().contains(path)) {
             return "<Missing message: " + path + ">";
         }
         String message = getYaml().getString(path);
-        String prefix = getYaml().getString(MessageKey.PREFIX.getPath());
-        prefix = prefix == null ? "<Prefix not exist> " : prefix;
+        String prefix = getPrefix() == null ? "<Prefix not exist> " : getPrefix();
         return CC.translate(prefix + message);
     }
 }
